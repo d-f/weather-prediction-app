@@ -27,3 +27,7 @@ def save_json(json_dict, file_path: Path):
     with open(file_path, mode="w") as opened_json:
         json.dump(json_dict, opened_json) 
         
+
+def read_json(json_path: Path):
+    with open(json_path) as opened_json:
+        return json.load(opened_json)
