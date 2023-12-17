@@ -8,7 +8,7 @@ import pymongo
 def create_argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-host_name", default="localhost:27017")
-    parser.add_argument("-db_name", default="noaa_global_marine")
+    parser.add_argument("-db_name", default="noaa_global_hourly")
     parser.add_argument("-col_name", default="wp_app")
     parser.add_argument("-csv_dir", default="C:\\personal_ML\\weather_prediction_app\\noaa_data\\", type=Path)
     return parser.parse_args()
