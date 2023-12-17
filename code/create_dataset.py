@@ -13,7 +13,6 @@ def create_argparser():
     parser.add_argument("-db_name", default="noaa_global_hourly")
     parser.add_argument("-col_name", default="wp_app")
     parser.add_argument("-save_path", default="C:\\personal_ML\\weather_prediction_app\\raw_dataset.json")
-    parser.add_argument("-threshold", type=int, default=20)
     return parser.parse_args()
 
 
