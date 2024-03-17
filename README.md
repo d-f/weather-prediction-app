@@ -10,7 +10,7 @@ python upload_csv_files.py -db_name noaa_global_hourly -col_name wp_app -csv_dir
 ```
 The default host name of localhost:27017 will be used, if a different one is desired, change by setting -hostname argument of upload_csv_files.py
 
-Each row in the CSV file contains data for every 5 minutes, and the temperature reading has various quality control checks.
+Each row in the CSV file contains data for roughly every 5 minutes, and the temperature reading has various quality control checks.
 
 PyMongo was used in order to filter for missing temperature values or temperature values with undesirable quality control flags:
 
