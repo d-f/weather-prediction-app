@@ -30,3 +30,29 @@ python process_dataset.py
 
 
 mysql --local_infile=1 -u root -p
+
+The results from the SQL query suggest that a larger hidden sizes and additional learning rates around 1e-5 might be useful to train.
+| Batch Size  | Learning Rate | LSTM Layers | Hidden Size | Test Loss             |
+| ----------- | ------------- | ----------- | ----------- | --------------------- |
+| 16          |  1e-5         | 5           | 1024        | 1.6 x 10<sup>-5</sup> |
+| 16          |  1e-5         | 5           | 512         | 2.6 x 10<sup>-5</sup> |
+| 16          |  5e-5         | 5           | 512         | 8.7 x 10<sup>-5</sup> |
+
+
+
+
+| LSTM Layers | Test MSE              | difference from minimum |
+| ----------- | --------------------- | ----------------------- | 
+| 5           | 1.6 x 10<sup>-5</sup> | 0                       |  
+| 5           | 2.6 x 10<sup>-5</sup> | 9.6 x 10<sup>-6</sup>   | 
+| 5           | 8.7 x 10<sup>-5</sup> | 7.0 x 10<sup>-5</sup>   |
+| 5           | 0.03                  | 0.04                    |  
+| 5           | 0.04                  | 0.04                    | 
+| 5           | 0.05                  | 0.05                    | 
+| 5           | 0.05                  | 0.05                    |  
+| 5           | 0.11                  | 0.11                    | 
+| 10          | 0.11                  | 0.11                    | 
+| 5           | 0.13                  | 0.13                    |
+
+
+
