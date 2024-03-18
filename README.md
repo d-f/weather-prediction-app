@@ -25,3 +25,8 @@ These raw data are normalized and made seasonal stationary with:
 ```
 python process_dataset.py
 ```
+
+
+
+
+mysql --local_infile=1 -u root -p
