@@ -56,3 +56,17 @@ The results from the SQL query suggest that a larger hidden sizes and additional
 
 
 
+
+```
+docker build -t weather_prediction_app .
+```
+
+
+```
+docker run -p 80:80 weather_prediction_app
+```
+
+
+
+
+
