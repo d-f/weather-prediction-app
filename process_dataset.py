@@ -67,12 +67,8 @@ def window_sequence(
     """
     for window_idx in range(num_windows):
         if utils.data_utils.check_window_duration(
-            start=datetime.fromtimestamp(
-                datetime.timestamp(list(dataset["train"].keys())[window_idx*total_size])
-            ),
-            end=datetime.fromtimestamp(
-                datetime.timestamp(list(dataset["train"].keys())[(window_idx*total_size)+total_size])
-            ),
+            start=datetime.fromtimestamp(datetime.timestamp(list(dataset["train"].keys())[window_idx*total_size])),
+            end=datetime.fromtimestamp(datetime.timestamp(list(dataset["train"].keys())[(window_idx*total_size)+total_size])),
             total_size=total_size
         ):
             total_vector = list(dataset["train"].values())[window_idx*total_size:(window_idx*total_size)+total_size]
@@ -123,17 +119,9 @@ def main():
     missing_time_idxs = utils.data_utils.find_missing_times(raw_series)
     raw_series = utils.data_utils.fill_in_missing(raw_series=raw_series, missing_times=missing_time_idxs)
     utils.data_utils.save_data_prep(raw_series=raw_series, file_path=args.data_prep_json)
-    norm_data = utils.data_utils.normalize_dataset(
-        raw_series=raw_series, 
-        min_val=raw_series.min(), 
-        max_val=raw_series.max()
-    )
+    norm_data = utils.data_utils.normalize_dataset(raw_series=raw_series, min_val=raw_series.min(), max_val=raw_series.max())
     partitioned_n_dataset = partition_dataset(dataset=norm_data, val_prop=args.val_prop)
-    windowed_n_dataset = create_window_dataset(
-        dataset=partitioned_n_dataset, 
-        input_width=args.input_width, 
-        label_width=args.label_width
-    )
+    windowed_n_dataset = create_window_dataset(dataset=partitioned_n_dataset, input_width=args.input_width, label_width=args.label_width)
     utils.data_utils.save_json(json_dict=windowed_n_dataset, file_path=Path(args.n_save_filepath))    
 
 
