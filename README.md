@@ -30,13 +30,13 @@ python process_dataset.py
 In the MySQL terminal:
 ```
 mysql --local_infile=1 -u root -p
-CREATE DATABASE weather_prediction
+CREATE DATABASE weather_prediction;
 USE weather_prediction;
-source C:/path/to/load_combined.sql;
+source C:/path/to/load_combined.sql
 ```
 In order to inspect the model performance:
 ```
-source C:/path/to/describe_performance.sql;
+source C:/path/to/describe_performance.sql
 ```
 
 | model_save_name | batch_size | learning_rate | number_of_LSTM_layers | hidden_size | input_size | output_size | test_loss |
