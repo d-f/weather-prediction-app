@@ -12,6 +12,9 @@ def csv_to_json(opened_csv: List) -> List:
     """
     converts each csv row to a json dict
     and appends to json_list
+
+    keyword arguments
+    opened_csv -- opened csv list from read_csv() function
     """
     json_list = []
     headers = opened_csv[0]
