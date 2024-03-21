@@ -2,10 +2,24 @@ import pymongo
 from pathlib import Path
 import json
 import csv
-from typing import Type, Dict
+from typing import Dict, List
 import pandas as pd
 import datetime
 import numpy as np
+
+
+def csv_to_json(opened_csv: List) -> List:
+    """
+    converts each csv row to a json dict
+    and appends to json_list
+    """
+    json_list = []
+    headers = opened_csv[0]
+    for row in opened_csv[1:]:
+        json_list.append(
+            {x: y for x, y in zip(headers, row)}
+            )
+    return json_list
 
 
 def mongo_client(host_name: str) -> pymongo.MongoClient:
