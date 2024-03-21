@@ -13,7 +13,6 @@ This csv was uploaded to a local MongoDB using PyMongo and the following:
 ```
 python upload_csv.py -host_name "localhost:27017/" -db_name noaa_global_hourly -col_name wp_app -csv_dir "C:\\personal_ML\\weather_prediction_app\\code\\noaa_data\\"
 ```
-The default host name of localhost:27017 will be used, if a different one is desired, change by setting -hostname argument of create_datasets.py
 
 Each row in the CSV file contains data for roughly every 5 minutes, and the temperature reading has various quality control checks.
 
@@ -25,7 +24,7 @@ python create_datasets.py -host_name "localhost:27017/" -db_name "noaa_global_ho
 
 The above code will create a JSON file dictated by -save_path where the keys are timestamps and the values are temperature values.
 
-These raw data are normalized and made seasonal stationary with:
+These raw data are normalized, windowed and partitioned with:
 
 ```
 python process_dataset.py -raw_data_filepath "./raw_dataset.json" -n_save_filepath "./normalized_dataset.json" -val_prop 0.1 -input_width 12 -output_width 24 -data_prep_json "./data_prep.json"
