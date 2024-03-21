@@ -7,8 +7,8 @@ import utils
 def parse_argparser():
     """parses command-line arguments"""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-csv_dir", type=Path, default=Path('C:\\personal_ML\\weather_prediction_app\\results\\'))
-    parser.add_argument("-save_path", type=Path, default=Path("C:\\personal_ML\\weather_prediction_app\\results\\combined.csv"))
+    parser.add_argument("-csv_dir", type=Path)
+    parser.add_argument("-save_path", type=Path)
     return parser.parse_args()
 
 
