@@ -73,7 +73,7 @@ To dockerize the application:
 docker build -t weather_prediction_app .
 ```
 
-In order to run the application to send POST requests:
+In order to run the application to send POST requests (port 80 used for this example):
 ```
 docker run -p 80:80 weather_prediction_app
 ```
