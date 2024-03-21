@@ -12,17 +12,17 @@ from lstm import LSTM
 def parse_argparser() -> argparse.Namespace:
     """parses command-line arguments"""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-output_size", type=int, default=24)
-    parser.add_argument("-input_size", type=int, default=12)
-    parser.add_argument("-hidden_size", type=int, default=1024)
-    parser.add_argument("-dataset_json", type=Path, default=Path("C:\\personal_ML\\weather_prediction_app\\normalized_dataset.json"))
-    parser.add_argument("-batch_size", type=int, default=16)
-    parser.add_argument("-lr", type=float, default=1e-6)
-    parser.add_argument("-num_layers", type=int, default=32)
-    parser.add_argument("-num_epochs", type=int, default=256)
-    parser.add_argument("-model_save_name",  type=str, default="model_10.pth.tar")
-    parser.add_argument("-result_dir", type=Path, default=Path("C:\\personal_ML\\weather_prediction_app\\results\\"))
-    parser.add_argument("-patience", type=int, default=5)
+    parser.add_argument("-output_size", type=int)
+    parser.add_argument("-input_size", type=int)
+    parser.add_argument("-hidden_size", type=int)
+    parser.add_argument("-dataset_json", type=Path)
+    parser.add_argument("-batch_size", type=int)
+    parser.add_argument("-lr", type=float)
+    parser.add_argument("-num_layers", type=int)
+    parser.add_argument("-num_epochs", type=int)
+    parser.add_argument("-model_save_name",  type=str)
+    parser.add_argument("-result_dir", type=Path)
+    parser.add_argument("-patience", type=int)
     return parser.parse_args()
 
 
