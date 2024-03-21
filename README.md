@@ -27,32 +27,35 @@ python process_dataset.py
 ```
 
 
-
-
+In the MySQL terminal:
+```
 mysql --local_infile=1 -u root -p
+CREATE DATABASE weather_prediction
+USE weather_prediction;
+source C:/path/to/load_combined.sql;
+```
+In order to inspect the model performance:
+```
+source C:/path/to/describe_performance.sql;
+```
 
-The results from the SQL query suggest that a larger hidden sizes and additional learning rates around 1e-5 might be useful to train.
-| Batch Size  | Learning Rate | LSTM Layers | Hidden Size | Test Loss             |
-| ----------- | ------------- | ----------- | ----------- | --------------------- |
-| 16          |  1e-5         | 5           | 1024        | 1.6 x 10<sup>-5</sup> |
-| 16          |  1e-5         | 5           | 512         | 2.6 x 10<sup>-5</sup> |
-| 16          |  5e-5         | 5           | 512         | 8.7 x 10<sup>-5</sup> |
+| model_save_name | batch_size | learning_rate | number_of_LSTM_layers | hidden_size | input_size | output_size | test_loss |
+| --------------- | ---------- | ------------- | --------------------- | ----------- | ---------- | ----------- | --------- |
+| model_5.pth.tar |         16 |      0.000001 |                     3 |         256 |         12 |          24 | 0.0273356 |
 
 
-
-
-| LSTM Layers | Test MSE              | difference from minimum |
-| ----------- | --------------------- | ----------------------- | 
-| 5           | 1.6 x 10<sup>-5</sup> | 0                       |  
-| 5           | 2.6 x 10<sup>-5</sup> | 9.6 x 10<sup>-6</sup>   | 
-| 5           | 8.7 x 10<sup>-5</sup> | 7.0 x 10<sup>-5</sup>   |
-| 5           | 0.03                  | 0.04                    |  
-| 5           | 0.04                  | 0.04                    | 
-| 5           | 0.05                  | 0.05                    | 
-| 5           | 0.05                  | 0.05                    |  
-| 5           | 0.11                  | 0.11                    | 
-| 10          | 0.11                  | 0.11                    | 
-| 5           | 0.13                  | 0.13                    |
+| Batch Size  | Learning Rate | LSTM Layers | Hidden Size | Test Loss | Test Loss Δ min.      |
+| ----------- | ------------- | ----------- | ----------- | --------- | --------------------- |
+|         16 |      0.000001 |            3 |         256 | 0.0273356 |                     0 |
+|         16 |      0.000001 |            3 |         512 | 0.0298493 | 0.0025136861950159073 |
+|         16 |       0.00001 |            3 |         256 | 0.0365308 |  0.009195137768983841 |
+|         16 |      0.000001 |           32 |        1024 | 0.0369591 |  0.009623490273952484 |
+|         16 |     0.0000001 |            3 |         256 | 0.0382041 |  0.010868437588214874 |
+|         16 |      0.000001 |           10 |         256 | 0.0438808 |    0.0165451280772686 |
+|         16 |      0.000001 |           10 |         512 | 0.0510757 |   0.02374005690217018 |
+|         16 |          0.01 |            3 |         256 | 0.0516867 |   0.02435111254453659 |
+|         16 |        0.0001 |            3 |         256 |  0.063349 |   0.03601333871483803 |
+|         16 |         0.001 |            3 |         256 | 0.0647168 |   0.03738119825720787 |
 
 
 
