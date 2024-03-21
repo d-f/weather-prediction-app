@@ -59,12 +59,12 @@ source C:/path/to/describe_performance.sql;
 
 
 
-
+To dockerize the application:
 ```
 docker build -t weather_prediction_app .
 ```
 
-
+In order to run the application to send POST requests:
 ```
 docker run -p 80:80 weather_prediction_app
 ```
