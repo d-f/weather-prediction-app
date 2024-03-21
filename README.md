@@ -3,19 +3,23 @@ The NOAA has hosted hourly weather data including air temperature measurements f
 
 For this demonstration application, the 99999927516.csv was used containing data from a station in Alaska.
 
+```
+git clone https://github.com/d-f/weather-prediction-app.git C:\\ml_projects\\weather_prediction_app\\code\\
+```
+
 This csv was uploaded to a local MongoDB using PyMongo and the following:
 
 ```
-python upload_csv_files.py -db_name noaa_global_hourly -col_name wp_app -csv_dir /ml_projects/weather-prediction-app/noaa_data/
+python upload_csv.py -host_name "localhost:27017/" -db_name noaa_global_hourly -col_name wp_app -csv_dir "C:\\personal_ML\\weather_prediction_app\\code\\noaa_data\\"
 ```
-The default host name of localhost:27017 will be used, if a different one is desired, change by setting -hostname argument of upload_csv_files.py
+The default host name of localhost:27017 will be used, if a different one is desired, change by setting -hostname argument of create_datasets.py
 
 Each row in the CSV file contains data for roughly every 5 minutes, and the temperature reading has various quality control checks.
 
 PyMongo was used in order to filter for missing temperature values or temperature values with undesirable quality control flags:
 
 ```
-python create_dataset.py -save_path /ml_projects/weather-prediction-app/raw_dataset.json
+python create_datasets.py -host_name "localhost:27017/" -db_name "noaa_global_hourly" -col_name "wp_app" -save_path "C:\\ml_projects\\weather_prediction_app\\code\\weather-prediction-app\\raw_dataset.json"
 ```
 
 The above code will create a JSON file dictated by -save_path where the keys are timestamps and the values are temperature values.
@@ -68,8 +72,3 @@ In order to run the application to send POST requests:
 ```
 docker run -p 80:80 weather_prediction_app
 ```
-
-
-
-
-
