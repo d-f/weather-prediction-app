@@ -51,7 +51,7 @@ def mongo_database(
     return client[database_name]
 
 
-def db_collection(database: pymongo.database, collection_name: str) -> pymongo.database:
+def mongo_collection(database: pymongo.database, collection_name: str) -> pymongo.database:
     """
     returns the collection from the database
 
@@ -202,15 +202,14 @@ def find_missing_times(raw_series: pd.Series) -> list:
     """finds which positions in the series are missing"""
     missing_time_idxs = []
     rs_list = [x for x in raw_series.keys()]
-    for time_entry_idx in range(len(raw_series.keys())):
-        if time_entry_idx+1 != len(raw_series.keys()):
+    for time_entry_idx in range(len(raw_series.keys())-1):
+        if not time_entry_idx+1 > len(raw_series.keys()):
             diff = rs_list[time_entry_idx+1] - rs_list[time_entry_idx]
             if diff > pd.Timedelta(minutes=5):
                 num_skipped_period = diff / pd.Timedelta(minutes=5)
                 for period_idx in range(int(num_skipped_period-1)): # -1 in order to not replace the end of the missing window
                     missing_time_idxs.append(
                         (
-                        time_entry_idx+period_idx+1,
                         rs_list[time_entry_idx]+((period_idx+1)*pd.Timedelta(minutes=5))
                          )
                         )
@@ -225,10 +224,11 @@ def fill_in_missing(raw_series: pd.Series, missing_times: list) -> pd.Series:
     raw_series    -- pandas series with missing values
     missing_times -- index values of missing times
     """
-    for idx, timestamp in missing_times:
-        s1 = raw_series[0:idx]
+    for timestamp in missing_times:
+        idx = [x for x in raw_series.keys()].index(timestamp-pd.Timedelta(minutes=5))
+        s1 = raw_series[0:idx+1]
         s2 = pd.Series({timestamp: np.nan})
-        s3 = raw_series[idx:]
+        s3 = raw_series[idx+1:]
         raw_series = pd.concat([s1, s2, s3])
 
     raw_series = raw_series.interpolate()
@@ -242,12 +242,12 @@ def save_data_prep(raw_series: pd.Series, file_path: Path) -> None:
         json.dump(save_dict, opened_json)
 
 
-def check_window_duration(start, end, total_size):
+def check_window_duration(start, end, total_size, num_minutes):
     """
     checks whether the difference between two sizes
     is equal to total_size
     """
-    if end - start == datetime.timedelta(minutes=5*total_size):
+    if end - start == datetime.timedelta(minutes=num_minutes*total_size):
         return True
     else:
         return False
