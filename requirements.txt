@@ -7,7 +7,7 @@ cffi==1.16.0
 charset-normalizer==2.0.4
 colorama==0.4.6
 contourpy==1.2.0
-cryptography==41.0.7
+cryptography==42.0.4
 cycler==0.12.1
 fastapi==0.103.0
 filelock==3.13.1
