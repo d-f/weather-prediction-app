@@ -60,6 +60,6 @@ tornado==6.3.3
 tqdm==4.65.0
 typing_extensions==4.9.0
 tzdata==2023.3
-urllib3==1.26.18
+urllib3==1.26.19
 wheel==0.41.2
 win-inet-pton==1.1.0
