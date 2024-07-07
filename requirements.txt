@@ -9,7 +9,7 @@ colorama==0.4.6
 contourpy==1.2.0
 cryptography==42.0.4
 cycler==0.12.1
-fastapi==0.103.0
+fastapi==0.109.1
 filelock==3.13.1
 fonttools==4.25.0
 gmpy2==2.1.2
