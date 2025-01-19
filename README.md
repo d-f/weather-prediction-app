@@ -57,7 +57,7 @@ source C:/path/to/describe_performance.sql
 ```
 Output:
 
-| batch_size | learning_rate | number_of_LSTM_layers | hidden_size | test_loss  | difference_from_min   |
+| batch_size | learning_rate | number_of_LSTM_layers | hidden_size | Mean Squared Error  | MSE difference_from_min   |
 |----------- | ------------- | --------------------- | ----------- | ---------- | --------------------- |
 |          8 |        0.0008 |                     4 |        1024 | 0.00298405 |                     0 |
 |          8 |        0.0007 |                    32 |         512 | 0.00465322 | 0.0016691710334271193 |
@@ -72,7 +72,7 @@ Output:
 
 Table 1: Results from the first query in describe_performance.sql
 
-| number_of_LSTM_layers | test_loss  | difference_from_min   |
+| number of LSTM layers | Mean Squared error  | MSE difference from min   |
 | --------------------- | ---------- | --------------------- |
 |                     4 | 0.00298405 |                     0 |
 |                    32 | 0.00465322 | 0.0016691710334271193 |
@@ -87,7 +87,7 @@ Table 1: Results from the first query in describe_performance.sql
 
 Table 2: Results from the second query in describe_performance.sql
 
-| model_save_name         | batch_size | learning_rate | number_of_LSTM_layers | hidden_size | input_size | output_size | test_loss  |
+| model_save_name         | batch_size | learning_rate | number_of_LSTM_layers | hidden_size | input_size | output_size | MSE  |
 | ----------------------- | ---------- | ------------- | --------------------- | ----------- | ---------- | ----------- |------------|
 | stable_model_10.pth.tar |          8 |        0.0008 |                     4 |        1024 |         12 |          24 | 0.00298405 |
 
