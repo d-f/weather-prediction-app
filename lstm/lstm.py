@@ -22,12 +22,14 @@ class LSTM(nn.Module):
     """
     def __init__(self, input_size, output_size, hidden_size, num_layers):
         super(LSTM, self).__init__()
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, dropout=0.2)
         self.linear = nn.Linear(hidden_size, output_size)
+        self.dropout = nn.Dropout(0.2)
 
     def forward(self, x):
         """model forward pass"""
         out, _ = self.lstm(x)
+        out = self.dropout(out)
         out = self.linear(out)
         return out
     
