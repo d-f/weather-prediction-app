@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 from torch.utils.data import DataLoader
@@ -7,22 +8,23 @@ from pathlib import Path
 import torch
 from typing import Type
 from lstm import LSTM
+from sklearn.metrics import r2_score
 
 
 def parse_argparser() -> argparse.Namespace:
     """parses command-line arguments"""
     parser = argparse.ArgumentParser()
-    parser.add_argument("-output_size", type=int)
-    parser.add_argument("-input_size", type=int)
-    parser.add_argument("-hidden_size", type=int)
+    parser.add_argument("-output_size", type=int, default=1)
+    parser.add_argument("-input_size", type=int, default=12)
+    parser.add_argument("-hidden_size", type=int, default=256)
     parser.add_argument("-dataset_json", type=Path)
-    parser.add_argument("-batch_size", type=int)
-    parser.add_argument("-lr", type=float)
-    parser.add_argument("-num_layers", type=int)
-    parser.add_argument("-num_epochs", type=int)
+    parser.add_argument("-batch_size", type=int, default=16)
+    parser.add_argument("-lr", type=float, default=1e-4)
+    parser.add_argument("-num_layers", type=int, default=3)
+    parser.add_argument("-num_epochs", type=int, default=1000)
     parser.add_argument("-model_save_name",  type=str)
     parser.add_argument("-result_dir", type=Path)
-    parser.add_argument("-patience", type=int)
+    parser.add_argument("-patience", type=int, default=20)
     return parser.parse_args()
 
 
@@ -92,12 +94,22 @@ def validate(
     """
     model.eval()
     val_loss = 0
+    preds = []
+    ground_truth = []
     for batch_in, batch_out in tqdm(val_loader, desc="Validating"):
         pred = model(batch_in.to(device))
         loss = loss_fn(pred, batch_out.to(device))
         val_loss += loss
-    val_loss /= len(val_loader)            
-    return val_loss
+
+        for window in pred:
+            preds += [x.item() for x in window]
+
+        for window in batch_out:
+            ground_truth += [x.item() for x in window]
+
+    val_loss /= len(val_loader)
+    r2 = r2_score(y_true=ground_truth, y_pred=preds)            
+    return val_loss, r2
 
 
 def train(
@@ -130,7 +142,7 @@ def train(
     """
     model.to(device)
     train_loss_list = []
-    val_loss_list = []
+    val_result_list = []
     best_val_loss = np.inf
     patience_counter = 0
     for epoch_idx in range(num_epochs):
@@ -149,10 +161,10 @@ def train(
             tr_epoch_loss /= len(train_loader)
             train_loss_list.append((epoch_idx + 1, float(tr_epoch_loss.cpu().detach())))
             
-            val_loss = validate(model=model, val_loader=val_loader, device=device, loss_fn=loss_fn)
-            val_loss_list.append((epoch_idx+1, float(val_loss.cpu().detach())))
+            val_loss, val_r2 = validate(model=model, val_loader=val_loader, device=device, loss_fn=loss_fn)
+            val_result_list.append((epoch_idx+1, float(val_loss.cpu().detach()), val_r2))
 
-            print(f"epoch {epoch_idx+1} train loss [{tr_epoch_loss}], val loss [{val_loss}]")
+            print(f"epoch {epoch_idx+1} train loss [{tr_epoch_loss}], val loss [{val_loss}] val r2 [{val_r2}]")
 
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
@@ -161,7 +173,7 @@ def train(
             else:
                 patience_counter += 1                    
 
-    return train_loss_list, val_loss_list
+    return train_loss_list, val_result_list
 
 
 def test(
@@ -185,13 +197,36 @@ def test(
     """
     model = utils.model_utils.load_model(model=model, weight_path=Path(save_dir).joinpath(model_save_name))
     test_loss = 0
+    preds = []
+    ground_truth = []
     for batch_in, batch_out in tqdm(test_loader, desc="Testing"):
         pred = model(batch_in.to(device))
         loss = loss_fn(pred, batch_out.to(device))
         test_loss += loss
+
+        for window in pred:
+            preds += [x.item() for x in window]
+
+        for window in batch_out:
+            ground_truth += [x.item() for x in window]
+
     test_loss /= len(test_loader)  
+    r2 = r2_score(y_true=ground_truth, y_pred=preds)
     print("test loss:", test_loss)          
-    return float(test_loss.cpu().detach())
+    print("test r2:", r2)
+
+    min_val = min(min(preds), min(ground_truth))
+    max_val = max(max(preds), max(ground_truth))
+
+    plt.scatter(x=preds, y=ground_truth, alpha=0.7)
+    plt.title(f"R-squared: {r2}")
+    plt.xlabel("Prediction")
+    plt.ylabel("Ground Truth")
+    plt.plot([min_val, max_val], [min_val, max_val], 'k--')
+
+    plt.savefig(f'{model_save_name}_correlation.jpg')
+
+    return float(test_loss.cpu().detach()), r2
 
 
 def main():
@@ -201,7 +236,7 @@ def main():
     model = utils.model_utils.model(input_size=args.input_size, output_size=args.output_size, num_layers=args.num_layers, hidden_size=args.hidden_size)
     optimizer = utils.model_utils.optimizer(model=model, learning_rate=args.lr)
     train_loader, val_loader, test_loader = dataloaders(args.dataset_json, batch_size=args.batch_size)
-    train_loss, val_loss = train(
+    train_loss, val_result_list = train(
         train_loader=train_loader, 
         val_loader=val_loader, 
         model=model, 
@@ -213,16 +248,17 @@ def main():
         patience=args.patience,
         model_save_name=args.model_save_name
         )
-    test_loss = test(model=model, test_loader=test_loader, device=device, loss_fn=loss, model_save_name=args.model_save_name, save_dir=args.result_dir)
+    test_loss, test_r2 = test(model=model, test_loader=test_loader, device=device, loss_fn=loss, model_save_name=args.model_save_name, save_dir=args.result_dir)
     utils.data_utils.save_train_results(
         train_loss=train_loss, 
-        val_loss=val_loss, 
+        val_res=val_result_list, 
         result_fp=args.result_dir.joinpath(args.model_save_name.rpartition(".pth.tar")[0]+"_train_results.json")
         )
     utils.data_utils.save_experiment(
         result_fp=args.result_dir.joinpath(args.model_save_name.rpartition(".pth.tar")[0]+"_experiment.csv"),
         batch_size=args.batch_size, learning_rate=args.lr, num_layers=args.num_layers, 
-        hidden_size=args.hidden_size, input_size=args.input_size, output_size=args.output_size, test_loss=test_loss, model_save_name=args.model_save_name
+        hidden_size=args.hidden_size, input_size=args.input_size, output_size=args.output_size, test_loss=test_loss, model_save_name=args.model_save_name,
+        test_r2=test_r2
     )
 
 if __name__ == "__main__":
