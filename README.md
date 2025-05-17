@@ -3,6 +3,15 @@ The NOAA has hosted hourly weather data including air temperature measurements f
 
 For this demonstration application, the 99999927516.csv was used containing data from a station in Alaska.
 
+Best performing model: 
+| batch_size | learning_rate | number_of_LSTM_layers | hidden_size | MSE loss | r2   |
+|----------- | ------------- | --------------------- | ----------- | -------- | ---- | 
+| 16         | 1e-4          | 3                     | 256         | 5e-4     | 0.91 |
+
+![model_13 pth tar_correlation](https://github.com/user-attachments/assets/e2816a9b-1d72-4d00-ac0e-828edf40e2b6)
+
+
+
 ```
 git clone https://github.com/d-f/weather-prediction-app.git C:\\ml_projects\\weather_prediction_app\\code\\
 cd C:\\ml_projects\\weather_prediction_app\\code\\weather-prediction-app\\
