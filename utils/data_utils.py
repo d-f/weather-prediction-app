@@ -107,7 +107,7 @@ def read_json(json_path: Path) -> Dict:
         return json.load(opened_json)
 
 
-def save_train_results(train_loss: list, val_loss: list, result_fp: Path) -> None:
+def save_train_results(train_loss: list, val_res: list, result_fp: Path) -> None:
     """
     saves the train and validation loss per epoch
 
@@ -118,7 +118,8 @@ def save_train_results(train_loss: list, val_loss: list, result_fp: Path) -> Non
     """
     save_dict = {
         "train loss per epoch": train_loss,
-        "validation loss per epoch": val_loss
+        "validation loss per epoch": [(x[0], x[1]) for x in val_res],
+        "validation r2 per epoch": [(x[0], x[2]) for x in val_res]
         }
     save_obj = json.dumps(save_dict)
     with open(result_fp, mode="w") as opened_json:
@@ -134,7 +135,8 @@ def save_experiment(
         input_size: int, 
         output_size: int, 
         test_loss: float, 
-        model_save_name: str
+        model_save_name: str,
+        test_r2: float
         ) -> None:
     """
     saves the test performance, model name and hyperparameters
@@ -151,8 +153,8 @@ def save_experiment(
     model_save_name -- model name, including .pth.tar
     """
     csv_list = [
-        ("model_save_name", "batch_size", "lr", "num_layers", "hidden_size", "input_size", "output_size", "test_loss"),
-        (model_save_name, batch_size, learning_rate, num_layers, hidden_size, input_size, output_size, test_loss)
+        ("model_save_name", "batch_size", "lr", "num_layers", "hidden_size", "input_size", "output_size", "test_loss", "test_r2"),
+        (model_save_name, batch_size, learning_rate, num_layers, hidden_size, input_size, output_size, test_loss, test_r2)
     ]
     with open(result_fp, mode="w", newline="") as opened_csv:
         writer = csv.writer(opened_csv)
